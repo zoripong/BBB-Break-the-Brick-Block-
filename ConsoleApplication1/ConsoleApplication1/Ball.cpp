@@ -21,9 +21,7 @@ Ball::Ball(){
 }
 
 Ball::Ball(int x, int y, int life, char *symbol){
-	gotoxy(0, 80);
-	cout << x << ", " << y << ", " << life << ", " << symbol << endl;
-
+	
 	/*calX = x;
 	if (calX % 2 == 1)
 		calX -= 1;
@@ -40,7 +38,7 @@ Ball::Ball(int x, int y, int life, char *symbol){
 	
 	calX = drawX;
 	calY = drawY;
-	calculateCoord(direction);
+	calculateCoord();
 
 	deleteX = -1;
 	deleteY = -1;
@@ -56,19 +54,14 @@ void Ball::setBall(int x, int y, int life, char *symbol){
 	if (drawX % 2 == 0)
 		drawX -= 1;
 	drawY = y;
-	
-	_getch();
-	cout << endl;
-	cout << endl;
-	cout << endl;
-	cout << drawX << "," << drawY << endl;
+
 	this->life = life;
 	moving = 0;
 	direction = TOP;
 
 	calX = drawX;
 	calY = drawY;
-	calculateCoord(direction);
+	calculateCoord();
 
 	deleteX = -1;
 	deleteY = -1;
@@ -84,7 +77,7 @@ int Ball::moveBall(){
 	drawY = calY;
 	
 	// ÁÂÇ¥ °è»ê
-	calculateCoord(direction);
+	calculateCoord();
 
 	return 0;
 }
@@ -94,13 +87,13 @@ void Ball::dieBall(){
 }
 
 void Ball::crushFrame(){
-	if (calX < 4 || calX > 28){
+	if (drawX < 4 || drawX > 28){
 		crushSide();
 	}
-	else if (calY< 3){
+	else if (drawY< 3){
 		crushUpDown();
 	}
-	else if (calY  > 22){
+	else if (drawY  > 22){
 		//DEBUG
 		//dieBall();
 		crushUpDown();
@@ -129,6 +122,10 @@ void Ball::crushSide(){
 		this->direction = RIGHT_DOWN;
 		break;
 	}
+	calX = drawX;
+	calY = drawY;
+	calculateCoord();
+
 }
 
 void Ball::crushUpDown(){
@@ -153,6 +150,9 @@ void Ball::crushUpDown(){
 		this->direction = LEFT_TOP;
 		break;
 	}
+	calX = drawX;
+	calY = drawY;
+	calculateCoord();
 
 }
 
@@ -171,12 +171,14 @@ void Ball::crushDiagonal(){
 		this->direction = RIGHT_TOP;
 		break;
 	}
+	calX = drawX;
+	calY = drawY;
+	calculateCoord();
+
 }
 
-
-
-void Ball::calculateCoord(DIRECTION direction){
-	switch (direction){
+void Ball::calculateCoord(){
+	switch (this->direction){
 	case TOP:
 		calY--;
 		break;
@@ -214,7 +216,6 @@ void Ball::removeBefore(){
 void Ball::setCalX(int x){
 	this->calX = x;
 }
-
 
 int Ball::getCalX(){
 	return this->calX;

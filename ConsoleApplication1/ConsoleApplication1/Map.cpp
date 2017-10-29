@@ -146,29 +146,23 @@ int Map::getCoodrInfo(int x, int y){
 }
 
 int Map::changeBlock(int blockType, int x, int y){
-	cout << "/" << blockType << "/";
-	
+
 	if (blockType == 1 || blockType == 2){
 		//DELETE BLOCK
 		coordInfo[y][x] = 0;
 	}
 	else if (blockType == 6){
 		//NOTE : DROP THE ITEM
-		cout << "DROPIT";
 		dropItem();
 	}
 	else if (blockType == 4 || blockType == 5){
 		//NOTE : BLOCK SETTING		
-		//cout << "BLOCKS";
 		coordInfo[y][x] = coordInfo[y][x] - 3;
 	}
 	else{
-		cout << "return 0";
 		return 0;
 	}
-
-	cout << "return 1";
-	return 1;
+	return blockType;
 }
 
 void Map::dropItem(){
@@ -181,42 +175,17 @@ void Map::dropItem(){
 
 int Map::checkTop(int x, int y){
 	// type, coord X, coord Y
-	//DEBUG
-	cout << "checkTop(x, y) = " << x / 2  << ", " << y - 2<< endl;
-	gotoxy(x, y - 2);
-	//cout << "¡â";
-	gotoxy(getWidth() * 2 + 9, 20);
-	cout << coordInfo[y - 2][x / 2];
-	return changeBlock(coordInfo[y - 2][x / 2], x / 2, y - 2);
+	return changeBlock(getCoodrInfo(y - 2, x / 2), x / 2, y - 2);
 }
 int Map::checkRight(int x, int y){
-	
-	//DEBUG
-	cout << "checkRight(x, y) = " << (x+2) / 2<< ", " << y - 1 << endl;
-	gotoxy(x + 2, y - 1);
-	//cout << "¢¹";
-	gotoxy(getWidth() * 2 + 9, 20);
-	cout << coordInfo[y - 1][(x+2)/2];
-	return changeBlock(coordInfo[y - 1][(x + 2) / 2], (x + 2) / 2, y - 1);
+	return changeBlock(getCoodrInfo(y - 1, (x + 2) / 2), (x + 2) / 2, y - 1);
 }
 int Map::checkLeft(int x, int y){
-	//DEBUG
-	cout << "checkLeft(x, y) = " << (x-2)/2<< ", " << y-1 << endl;
-	gotoxy(x - 2, y -1 );
-	//cout << "¢·";
-	gotoxy(getWidth() * 2 + 9, 20);
-	cout << coordInfo[y-1][(x-2)/2];
-	return changeBlock(coordInfo[y-1][(x-2)/2], (x - 2)/2, y-1);
+	return changeBlock(getCoodrInfo(y - 1, (x - 2) / 2), (x - 2) / 2, y - 1);
 
 }
 int Map::checkDown(int x, int y){
-	//DEBUG
-	cout << "checkDown(x, y) = " << x / 2 << ", " << y  << endl;
-	gotoxy(x , y+1 );
-	//cout << "¡ä";
-	gotoxy(getWidth() * 2 + 9, 20);
-	cout << coordInfo[y ][x/2];
-	return changeBlock(coordInfo[y ][x / 2], x / 2, y);
+	return changeBlock(getCoodrInfo(y, x / 2), x / 2, y);
 }
 
 int Map::checkDiagonal(int direction, int x, int y){
@@ -224,40 +193,27 @@ int Map::checkDiagonal(int direction, int x, int y){
 	switch (direction){
 
 	case 1: // RIGHT_TOP
-		gotoxy(getWidth() * 2 + 1, 23);
-
-		cout << "Right_top(x, y) = " << (x + 2) / 2 << ", " << y - 2 << endl;
-		gotoxy(x + 2, y - 2);
-		//cout << "¢Ö";
-		gotoxy(getWidth() * 2 + 9, 24);
-		cout << coordInfo[y - 2][(x + 2) / 2];
-		return changeBlock(coordInfo[y - 2][(x+2) / 2], x / 2, y);
+		return changeBlock(getCoodrInfo(y - 2, (x + 2) / 2), (x + 2) / 2, y - 2);
 	case 2: // LEFT_TOP
-		gotoxy(getWidth() * 2 + 1, 23);
-		cout << "left_top(x, y) = " << (x - 2) / 2 << ", " << y - 2<< endl;
-		gotoxy(x - 2, y - 2 );
-		//cout << "¢Ø";
-		gotoxy(getWidth() * 2 + 9, 24);
-		cout << coordInfo[y - 2][(x - 2) / 2];
-		return changeBlock(coordInfo[y - 2][(x - 2) / 2], x / 2, y);
+		return changeBlock(getCoodrInfo(y - 2, (x - 2) / 2), (x - 2) / 2, y - 2);
 	case 4: // RIGHT_DOWN
-		gotoxy(getWidth() * 2 + 1, 23);
-		cout << "right_down(x, y) = " << (x + 2) / 2 << ", " << y << endl;
-		gotoxy(x + 2, y);
-		//cout << "¢Ù";
-		gotoxy(getWidth() * 2 + 9, 24);
-		cout << coordInfo[y][(x + 2) / 2];
-		return changeBlock(coordInfo[y][(x + 2) / 2], x / 2, y);
+		return changeBlock(getCoodrInfo(y, (x + 2) / 2), (x + 2) / 2, y);
 	case 5: // LEFT_DOWN
-		gotoxy(getWidth() * 2 + 1, 23);
-		cout << "left_down(x, y) = " << (x - 2) / 2 << ", " << y << endl;
-		gotoxy(x - 2, y);
-		//cout << "¢×";
-		gotoxy(getWidth() * 2 + 9, 24);
-		cout << coordInfo[y][(x - 2) / 2];
-		return changeBlock(coordInfo[y][(x - 2) / 2], x / 2, y);
+		return changeBlock(getCoodrInfo(y, (x - 2) / 2), (x - 2) / 2, y);
 	}
-	
-	
+
+
 	return 0;
+}
+
+void Map::drawDebugingMap(){
+	gotoxy(1, 1);
+
+	for (int i = 0; i < getHeight(); i++){
+		for (int j = 0; j < getWidth(); j++){
+			cout << getCoodrInfo(i, j) << " ";
+		}
+		cout << endl;
+	}
+
 }

@@ -5,6 +5,7 @@
 #include "Bar.h"
 #include "Map.h"
 #include "Ball.h"
+#include "Player.h"
 
 
 using namespace std;
@@ -19,14 +20,14 @@ void setCursorType(CURSOR_TYPE c);
 
 void mainScreen();
 void explainScreen();
-void showRecord(string user); // TODO
-void startGame(string user); // TODO
+void showRecord(string player); // TODO
+void startGame(Player player); 
 void inputInfo(int type);
 void setSelecter(int x, int y);
 void printB(int x, int y, char * symbol);
-void init(string & user, Map & map, Bar & bar, Ball & ball);
-void update(Ball & ball, Map & map);
-void render(Ball & ball, Map & map, Bar & bar);
+void init(Player & user, Map & map, Bar & bar, Ball & ball);
+void update(Ball & ball, Map & map, Player & player);
+void render(Ball & ball, Map & map, Bar & bar, Player & player);
 void release();
 
 
@@ -236,13 +237,13 @@ void explainScreen(){
 	mainScreen();
 }
 
-void showRecord(string user){
+void showRecord(string player){
 	system("cls");
 	system("color 0E");
-	cout << user;
+	cout << player;
 }
 
-void startGame(string user){
+void startGame(Player player){
 	int width = 16;
 	int height = width * 3 / 2;
 
@@ -250,19 +251,7 @@ void startGame(string user){
 	Ball mainBall;
 	Bar mvBar;
 
-	init(user, map, mvBar, mainBall);
-
-	//DEBUG
-	_getch();
-	system("cls");
-	for (int i = 0; i < map.getHeight(); i++){
-		for (int j = 0; j < map.getWidth(); j++){
-			cout << map.getCoodrInfo(i, j) << " ";
-		}
-		cout << endl;
-	}
-
-
+	init(player, map, mvBar, mainBall);
 	mainBall.setDirection(RIGHT_TOP);
 	char nKey = 0;
 
@@ -288,8 +277,8 @@ void startGame(string user){
 			mvBar.drawBar();
 		}
 		Sleep(100);
-		update(mainBall, map);
-		render(mainBall, map, mvBar);
+		update(mainBall, map, player);
+		render(mainBall, map, mvBar, player);
 	}
 	release();
 }
@@ -306,9 +295,6 @@ void inputInfo(int type){
 	gotoxy(5, 8);
 	printf("Press the Enter");
 
-	//DEBUG
-	//setCursorType(SOLIDCURSOR);
-
 	string user;
 	do{
 		gotoxy(11, 5);
@@ -323,8 +309,10 @@ void inputInfo(int type){
 	} while (user.compare("") == 0 || user.length() > 8);
 
 	setCursorType(NOCURSOR);
-	if (type == 22)
-		startGame(user);
+	if (type == 22){
+		Player p(user, 0);
+		startGame(p);
+	}
 	else if (type == 26)
 		showRecord(user);
 
@@ -376,9 +364,6 @@ void setSelecter(int x, int y){
 }
 
 void printB(int x, int y, char * symbol){
-	//int x = 15;
-	//int y = 4;
-	//char * test = "□";
 	const char * block = symbol;
 
 	gotoxy(x, y);
@@ -418,11 +403,12 @@ void printB(int x, int y, char * symbol){
 }
 
 
-void init(string & user, Map & map, Bar & bar, Ball & ball){
-	setCursorType(NORMALCURSOR);
+void init(Player & user, Map & map, Bar & bar, Ball & ball){
 	system("cls");
 	system("color 0F");
 	system("mode con:cols=60 lines=30");
+
+	setCursorType(NORMALCURSOR);
 
 	bar.setBar(map.getWidth(), map.getHeight(), ORIGIN_BAR_LENGTH);
 	ball.setBall(map.getWidth(), map.getHeight() - 2, INIT_LIFE, "○");
@@ -430,113 +416,99 @@ void init(string & user, Map & map, Bar & bar, Ball & ball){
 	int stage = 1;
 	map.readMap(stage);
 	map.drawMap();
-	map.drawInfo(user, 100);
+	map.drawInfo(user.getName(), user.getScore());
 
 	bar.drawBar();
 	ball.drawBall();
 
 }
 
-void update(Ball & ball, Map & map){
-
-	// DEBUG
-	/*system("cls");
-	for (int i = 0; i < map.getHeight(); i++){
-	for (int j = 0; j < map.getWidth(); j++){
-	cout << map.getCoodrInfo(i, j) << " ";
-	}
-	cout << endl;
-	}*/
-
-	// 공 위치 업데이트
-	// DEBUG
-	gotoxy(map.getWidth() * 2 + 9, 16);
-	cout << "이후 이동 좌표" << endl;
-	gotoxy(map.getWidth() * 2 + 10, 16);
-	cout << "drawXY (" << ball.getDrawX() << ", " << ball.getDrawY() << ")";
-	gotoxy(map.getWidth() * 2 + 10, 17);
-	cout << "calXY (" << ball.getCalX() << ", " << ball.getCalY() << ")";
-
-	gotoxy(map.getWidth() * 2 + 5, 18);
-	//
-
-
+void update(Ball & ball, Map & map, Player & player){
 	ball.crushFrame();
 
+	int blockType;
 	int direction = ball.getDirection();
 	if (direction >= TOP && direction <= LEFT_TOP){
-		if (map.checkTop(ball.getDrawX(), ball.getDrawY()))
+		if (blockType = map.checkTop(ball.getDrawX(), ball.getDrawY())){
 			ball.crushUpDown();
-		gotoxy(map.getWidth() * 2 + 2, 19);
+			player.increaseScore(blockType);
+			return;
+		}
 		if (direction == RIGHT_TOP){
-			if (map.checkRight(ball.getDrawX(), ball.getDrawY()))
+			if (blockType = map.checkRight(ball.getDrawX(), ball.getDrawY())){
 				ball.crushSide();
-			map.checkDiagonal(direction, ball.getDrawX(), ball.getDrawY());
+				player.increaseScore(blockType);
+				return;
+			}
+			else if (blockType = map.checkDiagonal(direction, ball.getDrawX(), ball.getDrawY())){
+				ball.crushDiagonal();
+				player.increaseScore(blockType);
+				return;
+			}
 		}
 		else if (direction == LEFT_TOP){
-			if (map.checkLeft(ball.getDrawX(), ball.getDrawY()))
+			if (blockType = map.checkLeft(ball.getDrawX(), ball.getDrawY())){
 				ball.crushSide();
-			map.checkDiagonal(direction, ball.getDrawX(), ball.getDrawY());
+				player.increaseScore(blockType);
+				return;
+			}
+			else if (blockType = map.checkDiagonal(direction, ball.getDrawX(), ball.getDrawY())){
+				ball.crushDiagonal();
+				player.increaseScore(blockType);
+				return;
+			}
 
 		}
 	}
 	else if (direction >= DOWN && direction <= LEFT_DOWN){
-		if (map.checkDown(ball.getDrawX(), ball.getDrawY()))
+		if (blockType = map.checkDown(ball.getDrawX(), ball.getDrawY())){
 			ball.crushUpDown();
-		gotoxy(map.getWidth() * 2 + 2, 19);
+			player.increaseScore(blockType);
+			return;
+		}
 		if (direction == LEFT_DOWN){
-			if (map.checkLeft(ball.getDrawX(), ball.getDrawY()))
+			if (blockType = map.checkLeft(ball.getDrawX(), ball.getDrawY())){
 				ball.crushSide();
-			if(map.checkDiagonal(direction, ball.getDrawX(), ball.getDrawY()))
+				player.increaseScore(blockType);
+				return;
+			}
+			else if (blockType = map.checkDiagonal(direction, ball.getDrawX(), ball.getDrawY())){
 				ball.crushDiagonal();
+				player.increaseScore(blockType);
+				return;
+			}
 
 		}
 		else if (direction == RIGHT_DOWN){
-			if (map.checkRight(ball.getDrawX(), ball.getDrawY()))
+			if (blockType = map.checkRight(ball.getDrawX(), ball.getDrawY())){
 				ball.crushSide();
-			if(map.checkDiagonal(direction, ball.getDrawX(), ball.getDrawY()))
+				player.increaseScore(blockType);
+				return;
+			}
+			else if (blockType = map.checkDiagonal(direction, ball.getDrawX(), ball.getDrawY())){
 				ball.crushDiagonal();
-
+				player.increaseScore(blockType);
+				return;
+			}
 		}
 	}
-	//DEBUG
-	gotoxy(map.getWidth() * 2 + 9, 21);
-	switch (ball.getDirection()){
-	case 0:
-		cout << "TOP        ";
-		break;
-	case 1:
-		cout << "RIGHT_TOP  ";
-		break;
-	case 2:
-		cout << "LEFT_TOP  ";
-		break;
-	case 3:
-		cout << "DOWN       ";
-		break;
-	case 4:
-		cout << "RIGHT_DOWN  ";
-		break;
-	case 5:
-		cout << "LEFT_DOWN   ";
-		break;
-	}
-
-
-	//int blockType = map.getCoodrInfo(ball.getCalY() - 1, ball.getCalX() / 2 + 1);
-	//cout << "배열 좌표 (" << ball.getCalY() - 1 << ", " << ball.getCalX() / 2 + 1 << ") = " << blockType;
-
-	gotoxy(map.getWidth() * 2 + 5, 19);
 
 	ball.moveBall();
+	
+	//DEBUGU
 	_getch();
 
 }
 
-void render(Ball & ball, Map & map, Bar & bar){
+void render(Ball & ball, Map & map, Bar & bar, Player & player){
 	// 맵 출력
 	//DEBUG
-	//map.drawMap();
+	map.drawMap();
+	//map.drawDebugingMap();
+	
+	// 정보 출력
+	map.drawInfo(player.getName(), player.getScore());
+
 
 	// 공 출력
 	ball.removeBefore();
@@ -549,32 +521,3 @@ void render(Ball & ball, Map & map, Bar & bar){
 void release(){
 
 }
-
-
-/*
-COORD getXY()
-{
-COORD pos;
-CONSOLE_SCREEN_BUFFER_INFO buf;
-GetConsoleScreenBufferInfo(GetStdHandle(STD_OUTPUT_HANDLE),&buf);
-pos.X = buf.dwCursorPosition.X;
-pos.Y = buf.dwCursorPosition.Y;
-return pos;
-}
-
-*/
-
-/*
-BAR TEST
-int width = 16;
-int height = width * 3 / 2;
-drawFrame(width, height);
-Bar b(width, height, 5);
-int * test = b.getPositionX();
-
-for (int i = 0; i < b.getLength(); i++)
-cout << *(test + i) << endl;
-
-b.drawBar();
-
-_getch();*/

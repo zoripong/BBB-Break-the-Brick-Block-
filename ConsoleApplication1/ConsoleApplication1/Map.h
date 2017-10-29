@@ -14,6 +14,7 @@ private:
 
 	void dropItem();
 	int changeBlock(int blockType, int x, int y);
+
 public:
 	Map();
 	Map(int width, int height);
@@ -25,6 +26,7 @@ public:
 	void setMap(int width, int height);
 	void drawInfo(string str, int score);
 	void drawMap();
+	void drawDebugingMap();
 	int getCoodrInfo(int x, int y);
 	int checkTop(int x, int y);
 	int checkRight(int x, int y);

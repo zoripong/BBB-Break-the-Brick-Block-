@@ -30,6 +30,9 @@
     <ClCompile Include="BBB.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
+    <ClCompile Include="Player.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Text Include="자료조사.txt">
@@ -44,6 +47,9 @@
       <Filter>소스 파일</Filter>
     </ClInclude>
     <ClInclude Include="Ball.h">
+      <Filter>소스 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="Player.h">
       <Filter>소스 파일</Filter>
     </ClInclude>
   </ItemGroup>

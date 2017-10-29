@@ -47,7 +47,7 @@ public:
 	int getDrawY();
 
 	void crushFrame();
-	void calculateCoord(DIRECTION direction);
+	void calculateCoord();
 	void crushSide();
 	void crushUpDown();
 	void crushDiagonal();

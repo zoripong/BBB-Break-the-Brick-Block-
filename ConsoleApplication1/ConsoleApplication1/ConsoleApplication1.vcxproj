@@ -87,6 +87,7 @@
     <ClCompile Include="BBB.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</ExcludedFromBuild>
     </ClCompile>
+    <ClCompile Include="Player.cpp" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="자료조사.txt" />
@@ -95,6 +96,7 @@
     <ClInclude Include="Ball.h" />
     <ClInclude Include="Bar.h" />
     <ClInclude Include="Map.h" />
+    <ClInclude Include="Player.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
