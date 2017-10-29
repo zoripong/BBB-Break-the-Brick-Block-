@@ -10,162 +10,221 @@ extern void gotoxy(int x, int y);
 Ball::Ball(){
 	moving = 0;
 	life = 0;
-	posX = 0;
-	posY = 0;
-	direction =  TOP;
+	calX = 0;
+	calY = 0;
+	direction = TOP;
 	symbol = "○";
-	beforeX = 0;
-	beforeY = 0;
-	nextX = 0;
-	nextY = 0;
-}	
+	drawX = 0;
+	drawY = 0;
+	deleteX = 0;
+	deleteY = 0;
+}
 
 Ball::Ball(int x, int y, int life, char *symbol){
-	posX = x;
+	gotoxy(0, 80);
+	cout << x << ", " << y << ", " << life << ", " << symbol << endl;
 
-	if (posX % 2 == 1)
-		posX -= 1;
+	/*calX = x;
+	if (calX % 2 == 1)
+		calX -= 1;
+	calY = y;*/
 
-	posY = y;
+	drawX = x;
+	if (drawX % 2 == 0)
+		drawX -= 1;
+	drawY = y;
 	this->life = life;
 	moving = 0;
 	direction = TOP;
 	this->symbol = symbol;
-	beforeX = posX;
-	beforeY = posY;
-	nextX = posX;
-	nextY = posY;
+	
+	calX = drawX;
+	calY = drawY;
+	calculateCoord(direction);
+
+	deleteX = -1;
+	deleteY = -1;
 }
 
 void Ball::drawBall(){
-
-	gotoxy(posX, posY);
+	gotoxy(drawX, drawY);
 	cout << symbol;
 }
 
 void Ball::setBall(int x, int y, int life, char *symbol){
-	posX = x;
-	if (posX % 2 == 0)
-		posX -= 1;
-	posY = y;
+	drawX = x;
+	if (drawX % 2 == 0)
+		drawX -= 1;
+	drawY = y;
+	
+	_getch();
+	cout << endl;
+	cout << endl;
+	cout << endl;
+	cout << drawX << "," << drawY << endl;
 	this->life = life;
 	moving = 0;
 	direction = TOP;
+
+	calX = drawX;
+	calY = drawY;
+	calculateCoord(direction);
+
+	deleteX = -1;
+	deleteY = -1;
 }
 
-void Ball::moveBall(){
-	beforeX = posX;
-	beforeY = posY;
-
-	// TODO : 어디에 맞는지역시 중요..
-	if (posX < 4 || posX > 28){
-		switch (direction)
-		{
-		case TOP:
-			direction = DOWN;
-			break;
-		case RIGHT_TOP:
-			direction = LEFT_TOP;
-			break;
-		case RIGHT_DOWN:
-			direction = LEFT_DOWN;
-			break;
-		case DOWN:
-			direction = TOP;
-			break;
-		case LEFT_TOP:
-			direction = RIGHT_TOP;
-			break;
-		case LEFT_DOWN:
-			direction = RIGHT_TOP;
-			break;
-		}
-	}
-	else if (posY< 3){
-		//_getch();
-		switch (direction)
-		{
-		case TOP:
-			direction = DOWN;
-			break;
-		case RIGHT_TOP:
-			direction = RIGHT_DOWN;
-			break;
-		case LEFT_TOP:
-			direction = LEFT_DOWN;
-			break;
-		}
-		//_getch();
-	}
-	else if (posY  > 23){
-		dieBall();
-	}
-
+int Ball::moveBall(){
 	
+	// TODO 벽돌 충돌
 
-	switch (direction){
-	case TOP:
-		posY--;
-		nextX = posX;
-		nextY = posY - 1;
-		break;
-	case RIGHT_TOP:
-		posX+=2;
-		posY--;
-		nextX = posX + 1;
-		nextY = posY - 1;
-		break;
-	case RIGHT_DOWN:
-		posX+=2;
-		posY++;
-		nextX = posX + 1;
-		nextY = posY + 1;
-		break;
-	case DOWN:
-		posY++;
-		nextX = posX ;
-		nextY = posY + 1;
-		break;
-	case LEFT_DOWN:
-		posX-=2;
-		posY++;
-		nextX = posX - 1;
-		nextY = posY + 1;
-		break;
-	case LEFT_TOP:
-		posX-=2;
-		posY--;
-		nextX = posX - 1;
-		nextY = posY - 1;
-		break;
-	}
+	deleteX = drawX;
+	deleteY = drawY;
+	drawX = calX;
+	drawY = calY;
+	
+	// 좌표 계산
+	calculateCoord(direction);
 
+	return 0;
 }
 
 void Ball::dieBall(){
 	// TODO
 }
 
+void Ball::crushFrame(){
+	if (calX < 4 || calX > 28){
+		crushSide();
+	}
+	else if (calY< 3){
+		crushUpDown();
+	}
+	else if (calY  > 22){
+		//DEBUG
+		//dieBall();
+		crushUpDown();
+
+	}
+}
+void Ball::crushSide(){
+	switch (this->direction)
+	{
+	case TOP:
+		this->direction = DOWN;
+		break;
+	case RIGHT_TOP:
+		this->direction = LEFT_TOP;
+		break;
+	case RIGHT_DOWN:
+		this->direction = LEFT_DOWN;
+		break;
+	case DOWN:
+		this->direction = TOP;
+		break;
+	case LEFT_TOP:
+		this->direction = RIGHT_TOP;
+		break;
+	case LEFT_DOWN:
+		this->direction = RIGHT_DOWN;
+		break;
+	}
+}
+
+void Ball::crushUpDown(){
+	switch (this->direction)
+	{
+	case TOP:
+		this->direction = DOWN;
+		break;
+	case RIGHT_TOP:
+		this->direction = RIGHT_DOWN;
+		break;
+	case LEFT_TOP:
+		this->direction = LEFT_DOWN;
+		break;
+	case RIGHT_DOWN:
+		this->direction = RIGHT_TOP;
+		break;
+	case DOWN:
+		this->direction = TOP;
+		break;
+	case LEFT_DOWN:
+		this->direction = LEFT_TOP;
+		break;
+	}
+
+}
+
+void Ball::crushDiagonal(){
+	switch (this->direction){
+	case RIGHT_TOP:
+		this->direction = LEFT_DOWN;
+		break;
+	case LEFT_TOP:
+		this->direction = RIGHT_DOWN;
+		break;
+	case RIGHT_DOWN:
+		this->direction = LEFT_TOP;
+		break;
+	case LEFT_DOWN:
+		this->direction = RIGHT_TOP;
+		break;
+	}
+}
+
+
+
+void Ball::calculateCoord(DIRECTION direction){
+	switch (direction){
+	case TOP:
+		calY--;
+		break;
+	case RIGHT_TOP:
+		calX += 2;
+		calY--;
+		break;
+	case RIGHT_DOWN:
+		calX += 2;
+		calY++;
+		break;
+	case DOWN:
+		calY++;
+		break;
+	case LEFT_DOWN:
+		calX -= 2;
+		calY++;
+		break;
+	case LEFT_TOP:
+		calX -= 2;
+		calY--;
+		break;
+	}
+
+}
+
 void Ball::removeBefore(){
-	gotoxy(beforeX, beforeY);
+	if (deleteX == -1 || deleteY == -1)
+		return;
+	gotoxy(deleteX, deleteY);
 	printf("  ");
 }
 
 // setters and getters
-void Ball::setX(int x){
-	this->posX = x;
+void Ball::setCalX(int x){
+	this->calX = x;
 }
 
 
-int Ball::getX(){
-	return this->posX;
+int Ball::getCalX(){
+	return this->calX;
 }
 
-void Ball::setY(int y){
-	this->posY = y;
+void Ball::setCalY(int y){
+	this->calY = y;
 }
-int Ball::getY(){
-	return this->posY;
+int Ball::getCalY(){
+	return this->calY;
 }
 
 void Ball::setMoving(int moving){
@@ -184,9 +243,16 @@ DIRECTION Ball::getDirection(){
 	return this->direction;
 }
 
-int Ball::getNextX(){
-	return this->nextX;
+int Ball::getdeleteX(){
+	return this->deleteX;
 }
-int Ball::getNextY(){
-	return this->nextY;
+int Ball::getdeleteY(){
+	return this->deleteY;
+}
+
+int Ball::getDrawX(){
+	return this->drawX;
+}
+int Ball::getDrawY(){
+	return this->drawY;
 }

@@ -26,7 +26,7 @@ void setSelecter(int x, int y);
 void printB(int x, int y, char * symbol);
 void init(string & user, Map & map, Bar & bar, Ball & ball);
 void update(Ball & ball, Map & map);
-void render(Ball & ball);
+void render(Ball & ball, Map & map, Bar & bar);
 void release();
 
 
@@ -39,7 +39,7 @@ int main(){
 }
 
 // hide the cursor
-void setCursorType(CURSOR_TYPE c){ 
+void setCursorType(CURSOR_TYPE c){
 	CONSOLE_CURSOR_INFO CurInfo;
 
 	switch (c) {
@@ -118,7 +118,7 @@ void explainScreen(){
 	_getch();
 	gotoxy(23, 23);
 	cout << "                                         ";
-	
+
 	gotoxy(22, 23);
 	cout << "BBB에 찾아오신 여러분, 안녕하세요.▽";
 	_getch();
@@ -166,7 +166,7 @@ void explainScreen(){
 	_getch();
 	gotoxy(10, 23);
 	cout << "                                                                     ";
-	
+
 	gotoxy(18, 23);
 	cout << "보물블럭이 몇 개 숨겨져 있는지는 비밀입니다.▽";
 	_getch();
@@ -207,7 +207,7 @@ void explainScreen(){
 	cout << "★ 주변 블럭이 파괴됩니다!▽";
 	_getch();
 	gotoxy(26, 23);
-	cout << "                                           "; 
+	cout << "                                           ";
 
 	gotoxy(24, 23);
 	cout << "@ 공의 개수가 임시로 추가됩니다!▽";
@@ -249,20 +249,20 @@ void startGame(string user){
 	Map map(width, height);
 	Ball mainBall;
 	Bar mvBar;
-	
-	init(user,map, mvBar, mainBall);
+
+	init(user, map, mvBar, mainBall);
 
 	//DEBUG
+	_getch();
+	system("cls");
+	for (int i = 0; i < map.getHeight(); i++){
+		for (int j = 0; j < map.getWidth(); j++){
+			cout << map.getCoodrInfo(i, j) << " ";
+		}
+		cout << endl;
+	}
 
-	//system("cls");
-	//for (int i = 0; i < map.getHeight(); i++){
-	//	for (int j = 0; j < map.getWidth(); j++){
-	//		cout << map.getCoodrInfo(i, j) << " ";
-	//	}
-	//	cout << endl;
-	//}
 
-	// 
 	mainBall.setDirection(RIGHT_TOP);
 	char nKey = 0;
 
@@ -283,13 +283,13 @@ void startGame(string user){
 			case 32:
 				break;
 			}
-		
+
 			mvBar.removeBeforeX();
 			mvBar.drawBar();
 		}
 		Sleep(100);
 		update(mainBall, map);
-		render(mainBall);
+		render(mainBall, map, mvBar);
 	}
 	release();
 }
@@ -302,12 +302,13 @@ void inputInfo(int type){
 
 	gotoxy(6, 5);
 	printf("ID : ");
-	
+
 	gotoxy(5, 8);
 	printf("Press the Enter");
 
-	setCursorType(SOLIDCURSOR);
-	
+	//DEBUG
+	//setCursorType(SOLIDCURSOR);
+
 	string user;
 	do{
 		gotoxy(11, 5);
@@ -342,14 +343,14 @@ void setSelecter(int x, int y){
 	do{
 		input = _getch();
 		switch (input){
-		// Enter
+			// Enter
 		case 13:
 			if (posY == 22 || posY == 26)
 				inputInfo(posY);
 			else if (posY == 24)
 				explainScreen();
 			break;
-		// ↑
+			// ↑
 		case 72:
 			if (posY > 22){
 				gotoxy(posX, posY);
@@ -357,9 +358,9 @@ void setSelecter(int x, int y){
 				posY -= 2;
 				gotoxy(posX, posY);
 				printf("◁");
-			}			
+			}
 			break;
-		// ↓
+			// ↓
 		case 80:
 			if (posY < 26){
 				gotoxy(posX, posY);
@@ -435,55 +436,114 @@ void init(string & user, Map & map, Bar & bar, Ball & ball){
 	ball.drawBall();
 
 }
+
 void update(Ball & ball, Map & map){
+
+	// DEBUG
+	/*system("cls");
+	for (int i = 0; i < map.getHeight(); i++){
+	for (int j = 0; j < map.getWidth(); j++){
+	cout << map.getCoodrInfo(i, j) << " ";
+	}
+	cout << endl;
+	}*/
+
 	// 공 위치 업데이트
+	// DEBUG
+	gotoxy(map.getWidth() * 2 + 9, 16);
+	cout << "이후 이동 좌표" << endl;
+	gotoxy(map.getWidth() * 2 + 10, 16);
+	cout << "drawXY (" << ball.getDrawX() << ", " << ball.getDrawY() << ")";
+	gotoxy(map.getWidth() * 2 + 10, 17);
+	cout << "calXY (" << ball.getCalX() << ", " << ball.getCalY() << ")";
 
-	_getch();
-	gotoxy(map.getWidth()*2 + 10, 16);
-
-	cout <<"현재 공 : "<< ball.getX() << "/" << ball.getY() <<"     " << endl;
-	gotoxy(map.getWidth()*2 + 10, 17);
-
-	cout << "다음 공 : "<<ball.getNextX() << "/" << ball.getNextY() <<"   "<< endl;
-
-	//int val = map.getCoodrInfo(ball.getNextX()/2, ball.getNextY());
-	
-	int val = map.getCoodrInfo(ball.getY()-1 , ball.getX()/2+1);
-	gotoxy(map.getWidth() * 2 + 10, 18);
-
-	cout << "(" << ball.getX() / 2 +1 << ", " << ball.getY()-1 << " )" << val << "        ";
-	gotoxy(map.getWidth() * 2 + 10, 19);
-	cout << "배열 사이즈 " << map.getHeight() << " * " << map.getWidth();
+	gotoxy(map.getWidth() * 2 + 5, 18);
+	//
 
 
+	ball.crushFrame();
 
-	gotoxy(map.getWidth() * 2 + 10, 20);
-	
-	if (ball.getNextX() != 0 && ball.getNextY() != 0){
-		if (val == 1 || val == 2){
-			//DELETE BLOCK
-
-			cout << "DELETE";
+	int direction = ball.getDirection();
+	if (direction >= TOP && direction <= LEFT_TOP){
+		if (map.checkTop(ball.getDrawX(), ball.getDrawY()))
+			ball.crushUpDown();
+		gotoxy(map.getWidth() * 2 + 2, 19);
+		if (direction == RIGHT_TOP){
+			if (map.checkRight(ball.getDrawX(), ball.getDrawY()))
+				ball.crushSide();
+			map.checkDiagonal(direction, ball.getDrawX(), ball.getDrawY());
 		}
-		else if (val == 3){
-			//NOTE : DROP THE ITEM
-			cout << "DROPIT";
-		}
-		else if (val == 4 || val == 5 || val == 6){
-			//NOTE : BLOCK SETTING		
-			cout << "BLOCKS";
+		else if (direction == LEFT_TOP){
+			if (map.checkLeft(ball.getDrawX(), ball.getDrawY()))
+				ball.crushSide();
+			map.checkDiagonal(direction, ball.getDrawX(), ball.getDrawY());
 
 		}
 	}
-	
+	else if (direction >= DOWN && direction <= LEFT_DOWN){
+		if (map.checkDown(ball.getDrawX(), ball.getDrawY()))
+			ball.crushUpDown();
+		gotoxy(map.getWidth() * 2 + 2, 19);
+		if (direction == LEFT_DOWN){
+			if (map.checkLeft(ball.getDrawX(), ball.getDrawY()))
+				ball.crushSide();
+			if(map.checkDiagonal(direction, ball.getDrawX(), ball.getDrawY()))
+				ball.crushDiagonal();
+
+		}
+		else if (direction == RIGHT_DOWN){
+			if (map.checkRight(ball.getDrawX(), ball.getDrawY()))
+				ball.crushSide();
+			if(map.checkDiagonal(direction, ball.getDrawX(), ball.getDrawY()))
+				ball.crushDiagonal();
+
+		}
+	}
+	//DEBUG
+	gotoxy(map.getWidth() * 2 + 9, 21);
+	switch (ball.getDirection()){
+	case 0:
+		cout << "TOP        ";
+		break;
+	case 1:
+		cout << "RIGHT_TOP  ";
+		break;
+	case 2:
+		cout << "LEFT_TOP  ";
+		break;
+	case 3:
+		cout << "DOWN       ";
+		break;
+	case 4:
+		cout << "RIGHT_DOWN  ";
+		break;
+	case 5:
+		cout << "LEFT_DOWN   ";
+		break;
+	}
+
+
+	//int blockType = map.getCoodrInfo(ball.getCalY() - 1, ball.getCalX() / 2 + 1);
+	//cout << "배열 좌표 (" << ball.getCalY() - 1 << ", " << ball.getCalX() / 2 + 1 << ") = " << blockType;
+
+	gotoxy(map.getWidth() * 2 + 5, 19);
+
 	ball.moveBall();
-	
+	_getch();
+
 }
 
-void render(Ball & ball){
+void render(Ball & ball, Map & map, Bar & bar){
+	// 맵 출력
+	//DEBUG
+	//map.drawMap();
+
 	// 공 출력
 	ball.removeBefore();
 	ball.drawBall();
+
+	// 바 출력
+	bar.drawBar();
 }
 
 void release(){

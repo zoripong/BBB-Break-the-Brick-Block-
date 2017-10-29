@@ -1,6 +1,6 @@
 [화면 깜빡거림 방지 - 콘솔 더블 버퍼링]
 1. http://q-in.tistory.com/entry/RunnerGame-%EC%BD%98%EC%86%94-%EB%8D%94%EB%B8%94%EB%B2%84%ED%8D%BC%EB%A7%81
-2. http://heart4u.co.kr/tblog/330
+2. http://heart4u.co.kr/tblog/330\
 
 [벽돌깨기 예제]
 1. http://nowcampus.tistory.com/entry/8%EC%9E%A5 
