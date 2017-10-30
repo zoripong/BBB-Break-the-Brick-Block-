@@ -24,6 +24,7 @@ public:
 	void moveLeft();
 	void moveRight();
 	
+	void crushBar(int x, int y);
 
 };
 

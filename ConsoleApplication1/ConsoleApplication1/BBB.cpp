@@ -493,17 +493,22 @@ void update(Ball & ball, Map & map, Player & player){
 		}
 	}
 
+
+
+
+
+
+
 	ball.moveBall();
 	
 	//DEBUGU
-	_getch();
+	//_getch();
 
 }
 
 void render(Ball & ball, Map & map, Bar & bar, Player & player){
 	// 맵 출력
 	//DEBUG
-	map.drawMap();
 	//map.drawDebugingMap();
 	
 	// 정보 출력

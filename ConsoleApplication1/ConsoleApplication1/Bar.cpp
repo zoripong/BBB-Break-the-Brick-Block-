@@ -103,9 +103,12 @@ void Bar::moveRight(){
 }
 
 void Bar::removeBeforeX(){
-
-
 	gotoxy(beforeX, posY);
 	printf("  ");
+}
+
+void Bar::crushBar(int x, int y){
+
+
 
 }

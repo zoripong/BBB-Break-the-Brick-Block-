@@ -33,6 +33,7 @@ public:
 	int checkLeft(int x, int y);
 	int checkDown(int x, int y);
 	int checkDiagonal(int direction, int x, int y);
+	void updateMap(int type, int x, int y);
 };
 
 #endif

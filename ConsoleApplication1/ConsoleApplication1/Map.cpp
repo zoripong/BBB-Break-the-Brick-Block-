@@ -154,14 +154,17 @@ int Map::changeBlock(int blockType, int x, int y){
 	else if (blockType == 6){
 		//NOTE : DROP THE ITEM
 		dropItem();
+
 	}
 	else if (blockType == 4 || blockType == 5){
 		//NOTE : BLOCK SETTING		
 		coordInfo[y][x] = coordInfo[y][x] - 3;
+
 	}
 	else{
 		return 0;
 	}
+	updateMap(coordInfo[y][x], x, y);
 	return blockType;
 }
 
@@ -216,4 +219,9 @@ void Map::drawDebugingMap(){
 		cout << endl;
 	}
 
+}
+
+void Map::updateMap(int type, int x, int y){
+	gotoxy(x*2 +1, y +1);
+	cout << mapChar[type];
 }
