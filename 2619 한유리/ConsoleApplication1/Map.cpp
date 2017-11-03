@@ -14,7 +14,7 @@ extern void gotoxy(int x, int y);
 
 string Map::mapChar[11] = { "  ", "¡à", "¢Ã", "¡Ú", "¡á", "¡á", "¡á", "¡ê", "¢Õ", "¡Ý", "¢Ì" };
 const char* Map::mapFileName[15] = {
-	"./map/stage_02.txt", "./map/stage_02.txt", "./map/stage_03.txt", "./map/stage_04.txt", "./map/stage_05.txt",
+	"./map/stage_01.txt", "./map/stage_02.txt", "./map/stage_03.txt", "./map/stage_04.txt", "./map/stage_05.txt",
 	"./map/stage_06.txt", "./map/stage_07.txt", "./map/stage_08.txt", "./map/stage_09.txt", "./map/stage_10.txt",
 	"./map/stage_11.txt", "./map/stage_12.txt", "./map/stage_13.txt", "./map/stage_14.txt", "./map/stage_15.txt"
 };
