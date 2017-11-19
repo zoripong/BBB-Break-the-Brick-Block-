@@ -12,8 +12,8 @@ private:
 
 public:
 	Item(int itemType, int x, int y);
-	void drawItem();
-	void down();
+	void drawItem(Map & map, Ball & ball);
+	void down(Map & map, Ball & ball);
 	void removeBefore();
 	int getPosX();
 	int getPosY();

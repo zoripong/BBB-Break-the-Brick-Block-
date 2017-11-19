@@ -6,10 +6,14 @@ using namespace std;
 class Player{
 private:
 	string name;
+	string password;
 	int score;
 	string date;
+	string filePath;
 public:
-	Player(string name, int score);
+	Player(string name);
+	Player(string name, string password, int score);
+
 	string getName();
 	void setName(string name);
 
@@ -19,6 +23,10 @@ public:
 
 	string getDate();
 	void setDate(string date);
+	
+	string getPassword();
+
+	string getFilePath();
 };
 
 #endif

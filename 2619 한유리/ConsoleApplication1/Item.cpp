@@ -2,6 +2,9 @@
 #include<string>
 #include<conio.h>
 #include<ctime>
+
+#include "Ball.h"
+#include "Map.h"
 #include "Item.h"
 
 #define _CRT_SECURE_NO_WARNINGS
@@ -22,16 +25,33 @@ Item::Item(int itemType, int x, int y){
 	srand((unsigned int)time(NULL));
 
 }
-void Item::drawItem(){
+void Item::drawItem(Map & map, Ball & ball){
+
+
 	gotoxy(posX, posY);
-	cout << mapChar[itemType];
+	if (map.getCoodrInfo(posX, posY / 2) == 0 && !(ball.getDrawX() == posX && ball.getDrawY() == posY)){
+		cout << mapChar[itemType];
+	}
+
 }
-void Item::down(){
+void Item::down(Map & map, Ball & ball){
 	
 	deleteX = posX;
 	deleteY = posY;
 
+	if (map.getCoodrInfo(deleteX, deleteY / 2 - 1) != 0){
+		deleteX = -1;
+		deleteY = -1;
+	}
+	cout << deleteX << "&" << ball.getDrawX() << "/" << deleteY << "&" << ball.getDrawY() -1;
+	if (deleteX == ball.getDrawX() && deleteY == ball.getDrawY()){
+		deleteX = -1;
+		deleteY = -1;
+
+	}
+
 	posY++;
+
 
 }
 void Item::removeBefore(){

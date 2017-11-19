@@ -33,29 +33,42 @@ void setCursorType(CURSOR_TYPE c);
 void mainScreen();
 void explainScreen();
 void showRecord(string player); // TODO
-void startGame(Player player); 
+int showMapList();
+void startGame(Player player, int stage);
 void inputInfo(int type);
 void setSelecter(int x, int y);
 void printB(int x, int y, char * symbol);
 void init(Player & user, Map & map, Bar & bar, Ball & ball);
 void update(Ball & ball, Map & map, Bar & bar, Player & player);
 void render(Ball & ball, Map & map, Bar & bar, Player & player);
-void release(Player & player);
+void release(Player & player, int stage);
 void itemProcess(int type, Ball & ball, Map & map);
 void endGame();
 void checkRecord(string user);
-
+list<string> str_split(string str);
 
 void showRecord(Player & player);
-list<Player> readWriteFile(Player & player);
+list<Player> readWriteFile(Player & player, int stage);
 void showRanking(list<Player> & players);
 
 void drawInitial();
 list<Item> items;
 
 
+void showColor(){
+	for (int colour = 0x00; colour <= 0xff; colour++)
+	{
+		SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), colour);
+		cout << "Using colour:" << colour << endl;
+		cin.get();
+	}
+
+}
 int main(){
-	sndPlaySound("background.wav", SND_ASYNC | SND_LOOP);
+	//sndPlaySound("background.wav", SND_ASYNC | SND_LOOP);
+
+	//showColor();
+	//inputInfo(22);
 
 	srand((unsigned int)time(NULL));
 
@@ -270,25 +283,57 @@ void explainScreen(){
 
 	mainScreen();
 }
-
+ 
 void showRecord(string player){
 	system("cls");
 	system("color 0E");
 	cout << player;
 }
 
-void startGame(Player player){
+void startGame(Player player, int stage){
 	int width = 16;
 	int height = width * 3 / 2;
 
-	Map map(0, width, height);
+	Map map(stage, width, height);
 	Ball mainBall;
 	Bar mvBar;
 
 	init(player, map, mvBar, mainBall);
 	mainBall.setDirection(TOP);
 	char nKey = 0;
+
+	SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), 15);
+
+	gotoxy(map.getWidth() * 2 + 7, 14);
+	cout << "   ↖   ↑   ↗    │";
+	gotoxy(map.getWidth() * 2 + 7, 15);
+	cout << "   q    w   e";
+	gotoxy(map.getWidth() * 2 + 7, 16);
+	cout << "  START : [space]";
 	
+	gotoxy(map.getWidth() * 2 + 7, 18);
+	cout << " 방향을 선택하고";
+	gotoxy(map.getWidth() * 2 + 7, 19);
+	cout << "스페이스바를 꾸욱!";
+	gotoxy(map.getWidth() * 2 + 7, 20);
+	cout << "    미 선택 시";
+	gotoxy(map.getWidth() * 2 + 7, 21);
+	cout << " 자동 출발합니다.";
+
+
+	SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), 13);
+	map.drawRect(map.getWidth() * 2 + 5, 12, 12, 12);
+	gotoxy(0, 0);
+	SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), 95);
+
+	gotoxy(map.getWidth() * 2 + 11, 12);
+	cout << " key 안내";
+
+	gotoxy(0, 0);
+	SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), 15);
+	gotoxy(0, 0);
+
+
 	while (1)
 	{
 		if (_kbhit()){
@@ -313,52 +358,168 @@ void startGame(Player player){
 
 		}
 		
-		Sleep(100);
+		Sleep(75);
 		update(mainBall, map, mvBar, player);
 		render(mainBall, map, mvBar, player);
 
-		if (mainBall.getLife() == 0)
+		if (mainBall.getLife() == 0){
 			break;
+		}
 	}
 	
-	release(player);
+	release(player, stage);
 }
 
 void inputInfo(int type){
 	system("cls");
-
+	setCursorType(NORMALCURSOR);
 	system("color 70");
 	system("mode con:cols=24 lines=12");
 
 	gotoxy(6, 5);
-	printf("ID : ");
+	printf("ID :");
 
-	gotoxy(5, 8);
+	gotoxy(6, 7); 
+	printf("PW :");
+
+	gotoxy(5, 10);
 	printf("Press the Enter");
 
 	string user;
-	do{
+	string password;
+	do{ 
 		gotoxy(11, 5);
 		cout << "                  ";
 		gotoxy(11, 5);
-
+		
 		getline(cin, user);
 		if (user.length() > 8){
-			gotoxy(8, 7);
+			gotoxy(8, 9);
 			cout << "최대 8Byte";
 		}
 	} while (user.compare("") == 0 || user.length() > 8);
 
+
+	do{
+		gotoxy(11, 7);
+		cout << "                  ";
+		gotoxy(11, 7);
+		getline(cin, password);
+		if (password.length() > 8){
+			gotoxy(8, 9);
+			cout << "최대 8Byte";
+		}
+	} while (password.compare("") == 0 || password.length() > 8);
+
+
 	setCursorType(NOCURSOR);
 	if (type == 22){
-		Player p(user, 0);
-		startGame(p);
+		Player p(user,password, 0);
+		startGame(p, showMapList());
 	}
 	else if (type == 26){
 		checkRecord(user);
 		mainScreen();
 	}
 
+
+}
+
+int showMapList(){
+	setCursorType(NOCURSOR);
+
+	system("cls");
+	system("color 0F");
+	system("mode con:cols=32 lines=26");
+
+
+	int width = 16;
+	int height = width * 3 / 2;
+
+	Map map(0, width, height);
+
+	SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), 7);
+
+	map.readMap();
+	map.drawMap();
+
+	SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), 4);
+
+	gotoxy(14, 18);
+	cout << "STAGE " << map.getStage() + 1;
+	SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), 12);
+
+	gotoxy(11, 20);
+	cout << "Select Stage," ;
+	gotoxy(9, 21);
+	cout << "Press the Enter!";
+	SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), 7);
+
+	gotoxy(29, 23);
+	cout << "→";
+
+	_getch();
+	
+	int key;
+	while (1){
+
+		SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), 7);
+
+		key = _getch();
+		if (key == 32 || key == 13)
+			break;
+
+		if (key == 77)
+			map.showNextStage();
+		else if (key == 75)
+			map.showPreviousStage();
+
+		if (map.getStage() != 0){
+			gotoxy(3, 23);
+			cout << "←";
+		}
+		if (map.getStage() != 14){
+			gotoxy(29, 23);
+			cout << "→";
+		}
+
+
+		SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), 4);
+
+		gotoxy(14, 18);
+		cout << "STAGE " << map.getStage()+1;
+
+		SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), 12);
+
+		gotoxy(11, 20);
+		cout << "Select Stage,";
+		gotoxy(9, 21);
+		cout << "Press the Enter!";
+
+
+	}
+
+	system("cls");
+	system("mode con:cols=60 lines=30");
+
+	gotoxy(25, 15);
+	cout << "Are You Ready?";
+	
+	for (int i = 0; i < 5; i++){
+		system("color 0F");
+		Sleep(200);
+		system("color 9F");
+		Sleep(200);
+	}
+
+
+	
+	system("cls");
+	system("color 3F");
+	gotoxy(27, 15);
+	cout << "Game Start!";
+	Sleep(1500);
+	return map.getStage();
 }
 
 void setSelecter(int x, int y){
@@ -452,45 +613,24 @@ void init(Player & user, Map & map, Bar & bar, Ball & ball){
 	system("color 0F");
 	system("mode con:cols=60 lines=30");
 
-	setCursorType(NORMALCURSOR);
-
 	bar.setBar(map.getWidth(), map.getHeight(), ORIGIN_BAR_LENGTH);
 	ball.setBall(map.getWidth(), map.getHeight() - 2, INIT_LIFE, "○", map.getWidth(), map.getHeight());
 
 	map.readMap();
 	map.drawMap();
+
+	int * block = map.getBlock();
+	user.setScore(block[1] * 100 + block[4] * 50 + block[6] * 30);
+
 	map.drawInfo(user.getName(), user.getScore(), ball.getLife());
 
 	bar.drawBar();
 	ball.drawBall();
-
-	gotoxy(map.getWidth() * 2 + 7, 7);
-	cout << "key 안내";
-	gotoxy(map.getWidth() * 2 + 7, 8);
-	cout << "LEFT_TOP : (q)";
-	gotoxy(map.getWidth() * 2 + 7, 9);
-	cout << "TOP : (w)";
-	gotoxy(map.getWidth() * 2 + 7, 10);
-	cout << "RIGHT_TOP : (e)";
-	gotoxy(map.getWidth() * 2 + 7, 12);
-	cout << "START : (space)";
-	gotoxy(map.getWidth() * 2 + 7, 13);
-	cout << "방향을 선택하고";
-	gotoxy(map.getWidth() * 2 + 7, 15);
-	cout << "스페이스바를 꾸욱!";
-	gotoxy(map.getWidth() * 2 + 7, 16);
-	cout << "2초가 지나면";
-	gotoxy(map.getWidth() * 2 + 7, 17);
-	cout << "자동으로 시작합니다!";
-	gotoxy(map.getWidth() * 2 + 7, 19);
-	cout << "2619 HYR";
+	
 
 }
 
 void update(Ball & ball, Map & map, Bar & bar, Player & player){
-	gotoxy(map.getWidth() * 2 + 7, 19);
-	cout << "2619 HYR";
-
 
 	int blockType;
 	int direction = ball.getDirection();
@@ -514,7 +654,7 @@ void update(Ball & ball, Map & map, Bar & bar, Player & player){
 				if (blockType == 6){
 
 					Item item(rand() % 4, ball.getDrawX() + 2, ball.getDrawY() - 1);
-					items.push_back(item);
+					items.push_back(item);	
 				}
 				return;
 			}
@@ -625,10 +765,15 @@ void update(Ball & ball, Map & map, Bar & bar, Player & player){
 			while (i != items.end())
 			{
 
-				(*i).down();
+				(*i).down(map, ball);
 				(*i).removeBefore();
-				(*i).drawItem();
+				
+
+				// 3:32 여기다여기
+
+				(*i).drawItem(map, ball);
 				bar.drawBar();
+				ball.drawBall();
 
 				int valid = bar.checkX((*i).getPosX());
 				if (valid != 1)
@@ -640,6 +785,7 @@ void update(Ball & ball, Map & map, Bar & bar, Player & player){
 				if ((*i).getPosY() > max)
 				{
 					int type = (*i).removeIt();
+					ball.drawBall();
 					if (valid){
 					itemProcess(type, ball, map);
 					player.increaseScore(7);
@@ -653,46 +799,48 @@ void update(Ball & ball, Map & map, Bar & bar, Player & player){
 				}
 			}
 			if (((double)(end - start) / CLK_TCK) >= 2){
-				
-				int direction = rand() % 3;
-				switch (direction){
-				case 0:
-					ball.setDirection(TOP);
-					break;
-				case 1:
-					ball.setDirection(RIGHT_TOP);
-					break;
-				case 2:
-					ball.setDirection(LEFT_TOP);
-					break;
-				}
+				int *posBar = bar.getPositionX();
+				gotoxy(posBar[0], beforeY);
+				for (int i = 0; i < bar.getLength(); i++)
+					cout << "  ";
+
+			
 				break;
 			}
 			
 			end = clock();
 
+
 			if (_kbhit()){
 				ch = _getch();
 				if (beforeX != -1 && beforeY != -1){
-					gotoxy(beforeX, beforeY);
-					cout << "  ";
+					int *posBar = bar.getPositionX();
+					gotoxy(posBar[0], beforeY);
+					for (int i = 0; i < bar.getLength(); i++)
+						cout << "  ";
 				}
 				beforeY = ball.getDrawY() - 1;
 
 				if (ch == 'q' || ch == 'Q'){
+					start = clock();
+
 					beforeX = ball.getDrawX() - 2;
 					gotoxy(beforeX, beforeY);
 					cout << "↖";
 					ball.setDirection(LEFT_TOP);
 
 				}
-				else if (ch == 'e' || ch == 'e'){
+				else if (ch == 'e' || ch == 'E'){
+					start = clock();
+
 					beforeX = ball.getDrawX() + 2;
 					gotoxy(beforeX, beforeY);
 					cout << "↗";
 					ball.setDirection(RIGHT_TOP);
 				}
 				else if (ch == 'w' || ch == 'W'){
+					start = clock();
+
 					beforeX = ball.getDrawX();
 					gotoxy(beforeX, beforeY);
 					cout << "↑";
@@ -721,32 +869,33 @@ void update(Ball & ball, Map & map, Bar & bar, Player & player){
 				if (ch == 32)
 					break;
 			}
+
+
 		}
 	}
 
 	list<Item>::iterator i = items.begin();
-	while (i != items.end())
-	{
-		
-		(*i).down();
+	while (i != items.end()){
+		(*i).down(map, ball);
 		(*i).removeBefore();
-		(*i).drawItem();
+		(*i).drawItem(map, ball);
 		bar.drawBar();
-		if ((*i).getPosY() > map.getHeight() - 2)
-		{
+		ball.drawBall();
+		if ((*i).getPosY() > map.getHeight() - 2){
 			int type = (*i).removeIt();
+			ball.drawBall();
 			itemProcess(type, ball, map);
 			player.increaseScore(7);
 			items.erase(i++);  // alternatively, i = items.erase(i);
-		}
-		else
-		{
+		}else{
 			++i;
 		}
 	}
+
 	int val = ball.crushFrame();
-	if (val != -1)
-	{
+
+	if (val != -1){
+		map.drawInfo(player.getName(), player.getScore(), ball.getLife());
 		ball.ballInit(map.getWidth(), map.getHeight());
 		bar.barInit(map.getWidth(), map.getHeight());
 		ball.drawBall();
@@ -754,14 +903,12 @@ void update(Ball & ball, Map & map, Bar & bar, Player & player){
 		if (ball.getLife() != 0)
 			_getch();
 	}
+	
 	ball.moveBall();
-
-
 
 	//DEBUGU
 	//_getch();
 
-	
 }
 
 void render(Ball & ball, Map & map, Bar & bar, Player & player){
@@ -771,9 +918,7 @@ void render(Ball & ball, Map & map, Bar & bar, Player & player){
 	
 	// 스테이지 전환
 	if (map.getTreasureCount() == 0){
-		map.nextStage();
-		ball.ballInit(map.getWidth(), map.getHeight());
-		bar.barInit(map.getWidth(), map.getHeight());
+		ball.setLife(0);
 	}
 
 	// 정보 출력
@@ -782,17 +927,17 @@ void render(Ball & ball, Map & map, Bar & bar, Player & player){
 	// 공 출력
 	ball.removeBefore();
 	ball.drawBall();
-
+	
 	// 바 출력
 	bar.drawBar();
 }
 
-void release(Player & player){
+void release(Player & player, int stage){
 	system("cls");
 	system("mode con:cols=60 lines=15");
 
 	showRecord(player);
-	list<Player> players = readWriteFile(player);
+	list<Player> players = readWriteFile(player, stage);
 
 	system("cls");
 	gotoxy(25, 8);
@@ -859,9 +1004,15 @@ void showRecord(Player & player){
 	_getch();
 }
 
-list<Player> readWriteFile(Player & player){
+list<Player> readWriteFile(Player & player, int stage){
 	system("cls");
-	string filePath = "rank.txt";
+
+	string fileName[15] = {
+		"stage_1.txt", "stage_2.txt", "stage_3.txt", "stage_4.txt", "stage_5.txt",
+		"stage_6.txt", "stage_7.txt", "stage_8.txt", "stage_9.txt", "stage_10.txt",
+		"stage_11.txt", "stage_12.txt", "stage_13.txt", "stage_14.txt", "stage_15.txt"
+	};
+	string filePath = "ranking/stage/"+fileName[stage];
 	//Player * player;
 	list<Player> players;
 	ifstream input(filePath);
@@ -887,7 +1038,14 @@ list<Player> readWriteFile(Player & player){
 			flag = 0;
 			players.push_back(player);
 		}
-		Player player(name, iScore);
+		list<string> list = str_split(name);
+	
+		string id = list.front();
+		list.pop_front();
+		string pw = list.front();
+		cout << id << "_" << pw;
+		_getch();
+		Player player(id, pw, iScore);
 		players.push_back(player);
 	}
 	if (flag == 1){
@@ -1026,8 +1184,17 @@ void checkRecord(string user){
 			continue;
 
 		getline(input, score);
+		
+	
 		int iScore = atoi(score.c_str());
-		Player player(name, iScore);
+	
+		list<string> list = str_split(name);
+
+		string id = list.front();
+		list.pop_front();
+		string pw = list.front();
+
+		Player player(id, pw, iScore);
 		players.push_back(player);
 	}
 
@@ -1068,4 +1235,49 @@ void checkRecord(string user){
 
 	_getch();
 
+}
+
+
+list<string> str_split(string str){
+	list<string> strlist;
+	string::iterator tempit = str.begin();
+	int hd, tl;
+	bool goodword = true;
+	for (string::iterator it = str.begin(); it != str.end(); it++){
+		// 맨처음 _나 -가 나오는 경우
+		if (it == str.begin() && (*it == '-' || *it == '_' || *it == '/' || *it == '.'))
+		{
+			tempit++;
+			goodword = false;
+		}// 중간에 -나 _가 나오는 경우
+		else if (*it == '-' || *it == '_' || *it == '/' || *it == '.'){
+			if (it != str.end() - 1){
+				hd = distance(str.begin(), tempit);
+				tl = distance(tempit, it);
+				if (str.substr(hd, tl).length() > 0)
+				{
+					strlist.push_back(str.substr(hd, tl));
+				}
+				tempit = it + 1;
+				goodword = false;
+
+			}// 마지막에 나옴
+			else{
+				hd = distance(str.begin(), tempit);
+				tl = distance(tempit, it);
+				strlist.push_back(str.substr(hd, tl));
+				goodword = false;
+			}
+		}//마지막에 특수문자가 안나오는 경우에는 for문을 끝내기전 남은 단어 추가
+		else if (it == str.end() - 1 && !goodword){
+			hd = distance(str.begin(), tempit);
+			tl = distance(tempit, it + 1);
+			strlist.push_back(str.substr(hd, tl));
+		}
+	}
+	if (goodword == true && str.length() > 0){
+		strlist.push_back(str);
+	}
+	
+	return strlist;
 }

@@ -12,6 +12,9 @@ using namespace std;
 extern void gotoxy(int x, int y);
 
 
+// count 1 2 4 5 6
+int Map::blockCount[10] = { 0,};
+
 string Map::mapChar[11] = { "  ", "□", "▣", "★", "■", "■", "■", "↔", "↕", "◎", "▩" };
 const char* Map::mapFileName[15] = {
 	"./map/stage_01.txt", "./map/stage_02.txt", "./map/stage_03.txt", "./map/stage_04.txt", "./map/stage_05.txt",
@@ -91,12 +94,19 @@ void Map::readMap(){
 	FILE *fp;
 	int number;
 
+	// 초기화
+	for (int i = 0; i < 10; i++){
+		blockCount[i] = 0;
+	}
+
+
 	fp = fopen(mapFileName[stage], "r");
 
 	if (fp != NULL){
 		for (int i = 0; i < height; i++){
 			for (int j = 0; j < width; j++){
 				number = fgetc(fp) - 48;
+				blockCount[number]++;
 				if (number == 9)
 					coordInfo[i][j] = -1;
 				else {
@@ -109,6 +119,7 @@ void Map::readMap(){
 		}
 
 	}
+
 
 }
 
@@ -139,12 +150,47 @@ void Map::setMap(int width, int height){
 }
 
 void Map::drawInfo(string str, int score, int count){
-	gotoxy(this->width * 2 + 7, 3);
-	cout << str << "님";
+
+	// 호롤로 여기다
+	SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), 240);
+	for (int i = 0; i < 3; i++){
+		gotoxy(width * 2 + 6, 3 + i);
+		for (int j = 0; j < 10; j++)
+			cout << "  ";
+	}
+
+	gotoxy(this->width * 2 + 8, 3);
+	cout <<"     "<< str << "님";
 	gotoxy(this->width * 2 + 8, 4);
-	cout << score << "점";
+	cout <<"     "<<score << "점";
 	gotoxy(this->width * 2 + 8, 5);
-	cout << "남은 목숨 " << count << "개";
+	cout << "  남은 목숨 " << count << "개";
+
+	int* a = getBlock();
+
+	gotoxy(0, 0);
+
+	SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), 224);
+	for (int i = 0; i < 3; i++){
+		gotoxy(width * 2 + 6, 7+i);
+
+		for (int j = 0; j < 10; j++){
+			cout << "  ";
+		}
+	}
+		
+
+
+	gotoxy(width * 2 + 8, 7);
+	cout << "기본 상자 : " << a[1] + a[4] <<"  ";
+	gotoxy(width * 2 + 8, 8);
+	cout << "보물 상자 : " << a[5] + a[2] << "  ";
+	gotoxy(width * 2 + 8, 9);
+	cout << "아이템 상자 : " << a[6] << " ";
+
+
+	SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), 15);
+
 
 }
 
@@ -161,22 +207,18 @@ int Map::getCoodrInfo(int x, int y){
 
 int Map::changeBlock(int blockType, int x, int y){
 
-	if (blockType == 1){
+	if (blockType == 1 || blockType == 2 || blockType == 6){
 		//DELETE BLOCK
 		coordInfo[y][x] = 0;
-	}
-	else if(blockType == 2){
-		coordInfo[y][x] = 0;
-		treasureCount--;
-	}
-	else if (blockType == 6){
-		//NOTE : DROP THE ITEM
-		coordInfo[y][x] = 0;
-
+		blockCount[blockType]--;
 	}
 	else if (blockType == 4 || blockType == 5){
 		//NOTE : BLOCK SETTING		
+		blockCount[coordInfo[y][x]]--;
+		blockCount[coordInfo[y][x] - 3]++;
+
 		coordInfo[y][x] = coordInfo[y][x] - 3;
+
 
 	}
 	else{
@@ -202,9 +244,7 @@ int Map::checkDown(int x, int y){
 }
 
 int Map::checkDiagonal(int direction, int x, int y){
-
 	switch (direction){
-
 	case 1: // RIGHT_TOP
 		return changeBlock(getCoodrInfo(y - 2, (x + 2) / 2), (x + 2) / 2, y - 2);
 	case 2: // LEFT_TOP
@@ -229,6 +269,7 @@ void Map::drawDebugingMap(){
 
 	cout << endl;
 	cout << endl;
+	cout << endl;
 	cout << "보물 개수 : " << treasureCount;
 
 }
@@ -238,12 +279,33 @@ void Map::updateMap(int type, int x, int y){
 	cout << mapChar[type];
 }
 
-void Map::treasureRemove(){
-	(this->treasureCount)--;
-}
 
 int Map::getTreasureCount(){
-	return treasureCount;
+	return blockCount[2] + blockCount[5];
+}
+
+int* Map::getBlock(){
+	return blockCount;
+}
+void Map::showNextStage(){
+	if (stage == 14)
+		return;
+	stage++;
+	readMap();
+	drawMap();
+
+}
+
+void Map::showPreviousStage(){
+	if (stage == 0)
+		return;
+
+	stage--;
+	readMap();
+	drawMap();
+}
+int Map::getStage(){
+	return stage;
 }
 
 void Map::nextStage(){
@@ -265,4 +327,46 @@ void Map::randomBomb(){
 		int y = rand() % width/2;
 		coordInfo[x][y] = 0;
 	}
+}
+
+void Map::drawRect(int x, int y, int width, int height){
+
+	gotoxy(x, y);
+
+	for (int i = 0; i < height; i++){
+		gotoxy(x, y + i);
+		for (int j = 0; j < width; j++){
+			if (i == 0){
+				// 첫번째 줄
+				if (j == 0)
+					cout << "┌";
+				else if (j == width - 1)
+					cout << "┐";
+				else
+					cout << "─";
+			}
+			else if (i == height - 1){
+				// 마지막 줄
+				if (j == 0)
+					cout << "└";
+				else if (j == width - 1)
+					cout << "┘";
+				else
+					cout << "─";
+			}
+			else{
+				//가운데
+				if (j == 0)
+					cout << "│";
+				else if (j == width - 1){
+					gotoxy(x + (width - 1) * 2 - 1, y + i);
+					cout << "│";
+				}
+				else
+					j = width - 2;
+			}
+		}
+
+	}
+
 }

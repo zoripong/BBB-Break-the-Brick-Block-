@@ -10,6 +10,8 @@ private:
 	int height;
 	int **coordInfo;
 	static string mapChar[11];
+	static int blockCount[10];
+
 	static const char * mapFileName[15];
 	static int itemType[4];
 	int changeBlock(int blockType, int x, int y);
@@ -40,10 +42,16 @@ public:
 	void treasureRemove();
 	int getTreasureCount();
 	
+	void showNextStage();
+	void showPreviousStage();
 	void nextStage();
 
 	void randomBomb();
+	int getStage();
 
+	int* getBlock();
+
+	void Map::drawRect(int x, int y, int width, int height);
 };
 
 #endif

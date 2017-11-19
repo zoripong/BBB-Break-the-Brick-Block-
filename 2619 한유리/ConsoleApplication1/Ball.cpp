@@ -74,6 +74,8 @@ int Ball::moveBall(){
 	drawX = calX;
 	drawY = calY;
 	
+	//DEBUG
+	//cout << drawX << ", " << drawY <<"       ";
 	// ÁÂÇ¥ °è»ê
 	calculateCoord();
 
@@ -82,6 +84,8 @@ int Ball::moveBall(){
 
 void Ball::dieBall(){
 	// TODO
+	//DEBUG
+
 	this->life--;
 
 
@@ -90,9 +94,11 @@ void Ball::dieBall(){
 int Ball::crushFrame(){
 	if (drawX < 5 || drawX > (mapWidth-2)*2){
 		crushSide();
+		cout << "¹Ö";
 	}
-	else if (drawY<= 2){
+	else if (calY < 2){
 		crushUpDown();
+		cout << "¸Á";
 	}
 	else if (drawY  > mapHeight-2){
 		//DEBUG
@@ -283,17 +289,17 @@ void Ball::setDirection(DIRECTION direction){
 	switch (direction){
 	case TOP:
 		calX = drawX;
-		if (drawY-1 >= 2)
+		if (drawY > 2)
 			calY = drawY - 1;
 		break;
 	case RIGHT_TOP:
 		calX = drawX + 2;
-		if (drawY - 1 >= 2)
+		if (drawY  > 2)
 			calY = drawY - 1;
 		break;
 	case LEFT_TOP:
 		calX = drawX - 2;
-		if (drawY - 1 >= 2)
+		if (drawY  > 2)
 			calY = drawY - 1;
 		break;
 	case DOWN:
