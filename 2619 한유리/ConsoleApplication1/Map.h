@@ -46,12 +46,15 @@ public:
 	void showPreviousStage();
 	void nextStage();
 
-	void randomBomb();
+	void showInner();
 	int getStage();
 
 	int* getBlock();
 
-	void Map::drawRect(int x, int y, int width, int height);
+	void drawRect(int x, int y, int width, int height);
+	void drawInit();
+	void bombMap(int x, int y);
+	void drawBlock(int index);
 };
 
 #endif

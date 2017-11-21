@@ -321,11 +321,20 @@ void Map::nextStage(){
 	readMap();
 	drawMap();
 }
-void Map::randomBomb(){
-	for (int i = 0; i < 5; i++){
-		int x = rand() % height;
-		int y = rand() % width/2;
-		coordInfo[x][y] = 0;
+void Map::showInner(){
+	for (int i = 0; i < getHeight(); i++){
+		for (int j = 0; j < getWidth(); j++){
+			if (coordInfo[i][j] == 4){
+				blockCount[4]--;
+				blockCount[1]++;
+				coordInfo[i][j] = 1;
+			}
+			else if (coordInfo[i][j] == 5){
+				blockCount[5]--;
+				blockCount[2]++;
+				coordInfo[i][j] = 2;
+			}
+		}
 	}
 }
 
@@ -369,4 +378,65 @@ void Map::drawRect(int x, int y, int width, int height){
 
 	}
 
+}
+
+
+
+void Map::drawInit(){
+	SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), 15);
+
+	gotoxy(getWidth() * 2 + 7, 14);
+	cout << "   ↖   ↑   ↗    │";
+	gotoxy(getWidth() * 2 + 7, 15);
+	cout << "   q    w   e";
+	gotoxy(getWidth() * 2 + 7, 16);
+	cout << "  START : [space]";
+
+	gotoxy(getWidth() * 2 + 7, 18);
+	cout << " 방향을 선택하고";
+	gotoxy(getWidth() * 2 + 7, 19);
+	cout << "스페이스바를 꾸욱!";
+	gotoxy(getWidth() * 2 + 7, 20);
+	cout << "    미 선택 시";
+	gotoxy(getWidth() * 2 + 7, 21);
+	cout << " 자동 출발합니다.";
+
+
+	SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), 13);
+	drawRect(getWidth() * 2 + 5, 12, 12, 12);
+	gotoxy(0, 0);
+	SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), 95);
+
+	gotoxy(getWidth() * 2 + 11, 12);
+	cout << " key 안내";
+
+	gotoxy(0, 0);
+	SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), 15);
+	gotoxy(0, 0);
+
+}
+
+void Map::bombMap(int x, int y){
+
+	int coordSX = x - 2;
+
+	int startX = x - 1;
+	int startY = y - 1;
+
+	for (int i = 0; i < 3; i++){
+		for (int j = 0; j < 3; j++){
+
+			//cout << coordInfo[startY + i - 1][startX / 2 + j - 1] << " : ";
+			//cout << startY + i -1<< "/" << startX / 2 + j -1<< endl;
+			blockCount[coordInfo[startY + i - 1][startX / 2 + j - 1]]--;
+			coordInfo[startY + i - 1][startX / 2 + j - 1] = 0;
+			gotoxy(coordSX + j * 2, startY + i);
+			cout << "  ";
+		}
+	}
+
+}
+
+void Map::drawBlock(int index){
+	cout << mapChar[index];
 }

@@ -15,22 +15,32 @@ extern void gotoxy(int x, int y);
 
 Player::Player(string name){
 	this->name = name;
-	password = "";
 	score = -1;
 
 	filePath = "ranking/user/" + name + ".txt";
-	ofstream writeFile(filePath.data());
-	if (writeFile.is_open()){
-		writeFile << "";
-		writeFile.close();
+
+	ifstream f(filePath);
+	if (f.good()) {
+		f.close();
 	}
+	else {
+		f.close();
+		ofstream writeFile(filePath.data());
+		if (writeFile.is_open()){
+			for (int i = 0; i < 15; i++){
+				writeFile << "-1\n";
+			}
+			writeFile.close();
+		}
+
+	}
+
 
 }
 
-Player::Player(string name, string password, int score){
+Player::Player(string name,  int score){
 	this->name = name;
 	this->score = score;
-	this->password = password;
 
 	time_t t = time(0);
 	struct tm * now = localtime(&t);
@@ -39,10 +49,20 @@ Player::Player(string name, string password, int score){
 	cout << date;
 
 	filePath = "ranking/user/" + name + ".txt";
-	ofstream writeFile(filePath.data());
-	if (writeFile.is_open()){
-		writeFile << "";
-		writeFile.close();
+	ifstream f(filePath);
+	if (f.good()) {
+		f.close();
+	}
+	else {
+		f.close();
+		ofstream writeFile(filePath.data());
+		if (writeFile.is_open()){
+			for (int i = 0; i < 15; i++){
+				writeFile << "-1\n";
+			}
+			writeFile.close();
+		}
+
 	}
 
 }
@@ -89,11 +109,6 @@ string Player::getDate(){
 void Player::setDate(string date){
 	this->date = date;
 }
-
-string Player::getPassword(){
-	return this->password;
-}
-
 
 string Player::getFilePath(){
 	return this->filePath;

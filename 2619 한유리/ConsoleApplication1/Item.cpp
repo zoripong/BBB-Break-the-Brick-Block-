@@ -13,7 +13,7 @@ using namespace std;
 extern void gotoxy(int x, int y);
 
 //string Item::mapChar[4] = { "¡Ú",  "¡ê", "¢Õ", "¡Ý"};
-string Item::mapChar[4] = { "¡Ú",  "¡Ú", "¡Ý", "¡Ý"};
+string Item::mapChar[4] = { "¡Ù",  "¡Ý", "¢½", "¢½"};
 
 
 Item::Item(int itemType, int x, int y){
@@ -26,10 +26,8 @@ Item::Item(int itemType, int x, int y){
 
 }
 void Item::drawItem(Map & map, Ball & ball){
-
-
 	gotoxy(posX, posY);
-	if (map.getCoodrInfo(posX, posY / 2) == 0 && !(ball.getDrawX() == posX && ball.getDrawY() == posY)){
+	if (!(ball.getDrawX() == posX && ball.getDrawY() == posY)||itemType == 0){
 		cout << mapChar[itemType];
 	}
 
@@ -39,25 +37,23 @@ void Item::down(Map & map, Ball & ball){
 	deleteX = posX;
 	deleteY = posY;
 
-	if (map.getCoodrInfo(deleteX, deleteY / 2 - 1) != 0){
-		deleteX = -1;
-		deleteY = -1;
-	}
 	cout << deleteX << "&" << ball.getDrawX() << "/" << deleteY << "&" << ball.getDrawY() -1;
 	if (deleteX == ball.getDrawX() && deleteY == ball.getDrawY()){
 		deleteX = -1;
 		deleteY = -1;
-
 	}
 
 	posY++;
 
 
 }
-void Item::removeBefore(){
+void Item::removeBefore(Map & map){
 	if (deleteX != -1 && deleteY != -1){
 		gotoxy(deleteX, deleteY);
-		cout << "  ";
+
+		//cout << deleteX/2 << "&" << deleteY - 1 << " : " ;
+		//cout << map.getCoodrInfo(deleteY - 1, deleteX / 2);
+		map.drawBlock(map.getCoodrInfo(deleteY - 1, deleteX / 2));
 	}
 }
 
@@ -73,11 +69,13 @@ int Item::removeIt(){
 	//TODO:
 	gotoxy(posX, posY);
 	cout << "  ";
-
 	return itemType;
-
 }
 
 void randomBomb(){
 
+}
+
+int Item::getType(){
+	return itemType;
 }

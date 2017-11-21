@@ -14,12 +14,13 @@ public:
 	Item(int itemType, int x, int y);
 	void drawItem(Map & map, Ball & ball);
 	void down(Map & map, Ball & ball);
-	void removeBefore();
+	void removeBefore(Map & map);
 	int getPosX();
 	int getPosY();
 	int removeIt();
 	void randomBomb();
 	void increaseLife();
+	int getType();
 };
 
 #endif

@@ -19,6 +19,8 @@ private:
 	//clock_t moveTime;
 	//clock_t oldTime;
 	int mapWidth, mapHeight;
+	int beforeDirection;
+
 public:
 	Ball();
 	Ball(int x, int y, int life, char * symbol, int mapWidth, int mapHeight);
@@ -58,6 +60,14 @@ public:
 	
 	void ballInit(int width, int height);
 
+
+	void setBeforeDirection(int direction){
+		this->beforeDirection = direction;
+	}
+
+	int getBeforeDirection(){
+		return this->beforeDirection;
+	}
 };
 
 

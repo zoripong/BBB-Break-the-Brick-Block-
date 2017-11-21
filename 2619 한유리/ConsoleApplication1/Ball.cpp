@@ -94,11 +94,9 @@ void Ball::dieBall(){
 int Ball::crushFrame(){
 	if (drawX < 5 || drawX > (mapWidth-2)*2){
 		crushSide();
-		cout << "¹Ö";
 	}
 	else if (calY < 2){
 		crushUpDown();
-		cout << "¸Á";
 	}
 	else if (drawY  > mapHeight-2){
 		//DEBUG
