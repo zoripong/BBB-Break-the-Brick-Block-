@@ -1,19 +1,27 @@
-﻿빌드 시작: 2017-11-21 오전 8:18:31
-     1>2 노드의 "G:\2619 C++\2619 한유리\2619 한유리\ConsoleApplication1\ConsoleApplication1.vcxproj" 프로젝트(Build 대상)입니다.
+﻿빌드 시작: 2017-11-23 오전 3:10:43
+     1>2 노드의 "E:\c++\BBB-Break-the-Brick-Block-\2619 한유리\ConsoleApplication1\ConsoleApplication1.vcxproj" 프로젝트(Build 대상)입니다.
      1>ClCompile:
+         C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\CL.exe /c /ZI /nologo /W3 /WX- /sdl /Od /Oy- /D WIN32 /D _DEBUG /D _CONSOLE /D _LIB /D _MBCS /D _CRT_SECURE_NO_WARNINGS /Gm /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Fo"Debug\\" /Fd"Debug\vc120.pdb" /Gd /TP /analyze- /errorReport:prompt Item.cpp Player.cpp
+         Player.cpp
+     1>e:\c++\bbb-break-the-brick-block-\2619 한유리\consoleapplication1\player.cpp(8): warning C4005: '_CRT_SECURE_NO_WARNINGS' : 매크로 재정의
+                 명령줄 인수 :  '_CRT_SECURE_NO_WARNINGS'의 이전 정의를 참조하십시오.
+         Item.cpp
+     1>e:\c++\bbb-break-the-brick-block-\2619 한유리\consoleapplication1\item.cpp(10): warning C4005: '_CRT_SECURE_NO_WARNINGS' : 매크로 재정의
+                 명령줄 인수 :  '_CRT_SECURE_NO_WARNINGS'의 이전 정의를 참조하십시오.
+         코드를 생성하고 있습니다...
          C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\CL.exe /c /ZI /nologo /W3 /WX- /sdl /Od /Oy- /D WIN32 /D _DEBUG /D _CONSOLE /D _LIB /D _MBCS /D _CRT_SECURE_NO_WARNINGS /Gm /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Fo"Debug\\" /Fd"Debug\vc120.pdb" /Gd /TP /analyze- /errorReport:prompt BBB.cpp
          BBB.cpp
-     1>g:\2619 c++\2619 한유리\2619 한유리\consoleapplication1\bbb.cpp(1220): warning C4018: '<' : signed 또는 unsigned가 일치하지 않습니다.
+     1>e:\c++\bbb-break-the-brick-block-\2619 한유리\consoleapplication1\bbb.cpp(1225): warning C4018: '<' : signed 또는 unsigned가 일치하지 않습니다.
        Link:
-         C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\link.exe /ERRORREPORT:PROMPT /OUT:"G:\2619 C++\2619 한유리\2619 한유리\Debug\ConsoleApplication1.exe" /INCREMENTAL /NOLOGO kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /DEBUG /PDB:"G:\2619 C++\2619 한유리\2619 한유리\Debug\ConsoleApplication1.pdb" /SUBSYSTEM:CONSOLE /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:"G:\2619 C++\2619 한유리\2619 한유리\Debug\ConsoleApplication1.lib" /MACHINE:X86 Debug\Ball.obj
+         C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\link.exe /ERRORREPORT:PROMPT /OUT:"E:\c++\BBB-Break-the-Brick-Block-\2619 한유리\Debug\ConsoleApplication1.exe" /INCREMENTAL /NOLOGO kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /DEBUG /PDB:"E:\c++\BBB-Break-the-Brick-Block-\2619 한유리\Debug\ConsoleApplication1.pdb" /SUBSYSTEM:CONSOLE /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:"E:\c++\BBB-Break-the-Brick-Block-\2619 한유리\Debug\ConsoleApplication1.lib" /MACHINE:X86 Debug\Ball.obj
          Debug\Bar.obj
          Debug\Item.obj
          Debug\Map.obj
          Debug\Player.obj
          Debug\BBB.obj
-         ConsoleApplication1.vcxproj -> G:\2619 C++\2619 한유리\2619 한유리\Debug\ConsoleApplication1.exe
-     1>"G:\2619 C++\2619 한유리\2619 한유리\ConsoleApplication1\ConsoleApplication1.vcxproj" 프로젝트를 빌드했습니다(Build 대상).
+         ConsoleApplication1.vcxproj -> E:\c++\BBB-Break-the-Brick-Block-\2619 한유리\Debug\ConsoleApplication1.exe
+     1>"E:\c++\BBB-Break-the-Brick-Block-\2619 한유리\ConsoleApplication1\ConsoleApplication1.vcxproj" 프로젝트를 빌드했습니다(Build 대상).
 
 빌드했습니다.
 
-경과 시간: 00:00:02.85
+경과 시간: 00:00:05.39

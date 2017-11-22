@@ -10,9 +10,6 @@ using namespace std;
 
 extern void gotoxy(int x, int y);
 
-
-//http://code.i-harness.com/ko/q/f3a3a
-
 Player::Player(string name){
 	this->name = name;
 	score = -1;
@@ -46,7 +43,7 @@ Player::Player(string name,  int score){
 	struct tm * now = localtime(&t);
 	date = (now->tm_year + 1900) + "-" + (now->tm_mon + 1);
 	date += "-" + now->tm_mday;
-	cout << date;
+	//cout << date;
 
 	filePath = "ranking/user/" + name + ".txt";
 	ifstream f(filePath);

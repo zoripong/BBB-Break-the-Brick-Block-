@@ -14,6 +14,7 @@ Ball::Ball(){
 	calX = 0;
 	calY = 0;
 	direction = TOP;
+	beforeDirection = -4;
 	symbol = "¡Û";
 	drawX = 0;
 	drawY = 0;
@@ -30,7 +31,7 @@ Ball::Ball(int x, int y, int life, char * symbol, int mapWidth, int mapHeight){
 	moving = 0;
 	direction = TOP;
 	this->symbol = symbol;
-	
+	beforeDirection = -4;
 	calX = drawX;
 	calY = drawY;
 	calculateCoord();

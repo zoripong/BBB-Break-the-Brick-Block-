@@ -37,7 +37,6 @@ void Item::down(Map & map, Ball & ball){
 	deleteX = posX;
 	deleteY = posY;
 
-	cout << deleteX << "&" << ball.getDrawX() << "/" << deleteY << "&" << ball.getDrawY() -1;
 	if (deleteX == ball.getDrawX() && deleteY == ball.getDrawY()){
 		deleteX = -1;
 		deleteY = -1;
