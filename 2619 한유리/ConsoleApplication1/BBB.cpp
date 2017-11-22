@@ -323,7 +323,7 @@ void startGame(Player player, int stage){
 
 		}
 
-		Sleep(100);
+		Sleep(50);
 		update(mainBall, map, mvBar, player);
 		render(mainBall, map, mvBar, player);
 
@@ -1073,7 +1073,7 @@ list<Player> readWriteFile(Player & player, int stage){
 		"stage_6.txt", "stage_7.txt", "stage_8.txt", "stage_9.txt", "stage_10.txt",
 		"stage_11.txt", "stage_12.txt", "stage_13.txt", "stage_14.txt", "stage_15.txt"
 	};
-	string filePath = "ranking/stage/" + fileName[stage];
+	string filePath = "BBB/ranking/stage/" + fileName[stage];
 	//Player * player;
 	list<Player> players;
 	ifstream input(filePath);
@@ -1095,7 +1095,7 @@ list<Player> readWriteFile(Player & player, int stage){
 		continue;*/
 		getline(input, score);
 		int iScore = atoi(score.c_str());
-		cout << iScore;
+		//cout << iScore;
 		if (flag == 1 && iScore < player.getScore()){
 			flag = 0;
 			players.push_back(player);
@@ -1124,11 +1124,9 @@ list<Player> readWriteFile(Player & player, int stage){
 	}
 	outFile.close();
 
-	cout << player.getName();
-	_getch();
 
 
-	string userFilePath = "ranking/user/" + player.getName() + ".txt";
+	string userFilePath = "BBB/ranking/user/" + player.getName() + ".txt";
 	ifstream f(userFilePath);
 	if (f.good()) {
 		int scores[15] = { 0, };
@@ -1255,7 +1253,7 @@ void checkRecord(string user){
 	system("cls");
 
 	// todo 
-	string filePath = "ranking/user/" + user + ".txt";
+	string filePath = "BBB/ranking/user/" + user + ".txt";
 	ifstream f(filePath);
 	if (f.good()) {
 		system("color 3F");

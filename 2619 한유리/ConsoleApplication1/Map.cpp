@@ -17,9 +17,9 @@ int Map::blockCount[10] = { 0,};
 
 string Map::mapChar[11] = { "  ", "¡à", "¢Ã", "¡Ú", "¡á", "¡á", "¡á", "¡ê", "¢Õ", "¡Ý", "¢Ì" };
 const char* Map::mapFileName[15] = {
-	"./map/stage_01.txt", "./map/stage_02.txt", "./map/stage_03.txt", "./map/stage_04.txt", "./map/stage_05.txt",
-	"./map/stage_06.txt", "./map/stage_07.txt", "./map/stage_08.txt", "./map/stage_09.txt", "./map/stage_10.txt",
-	"./map/stage_11.txt", "./map/stage_12.txt", "./map/stage_13.txt", "./map/stage_14.txt", "./map/stage_15.txt"
+	"./BBB/map/stage_01.txt", "./BBB/map/stage_02.txt", "./BBB/map/stage_03.txt", "./BBB/map/stage_04.txt", "./BBB/map/stage_05.txt",
+	"./BBB/map/stage_06.txt", "./BBB/map/stage_07.txt", "./BBB/map/stage_08.txt", "./BBB/map/stage_09.txt", "./BBB/map/stage_10.txt",
+	"./BBB/map/stage_11.txt", "./BBB/map/stage_12.txt", "./BBB/map/stage_13.txt", "./BBB/map/stage_14.txt", "./BBB/map/stage_15.txt"
 };
 int itemType[4] = { 3, 7, 8, 9 };
 
